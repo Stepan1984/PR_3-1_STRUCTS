@@ -156,8 +156,8 @@ void BubbleSort (int *a, int n, ofstream &fout) // сортировка пузы
 	int i, j, itmp; memory += 3 * sizeof(int); 
 	chrono::steady_clock::time_point start_time, end_time; // переменные для подсчёта времени работы алгоритма
     start_time = chrono::steady_clock::now();
-	for (i = 1; ++secondaryC && i < n; i++)
-		for (j = n - 1; secondaryC++ && j >= i; j--)
+	for (i = 1; ++secondaryC && i < n; i++) // проход по всему массиву
+		for (j = n - 1; ++secondaryC && j >= i; j--) // проход по массиву с конца до i (в том числе проверим (i-1) элемент)
 			if (++mainC && a[j-1] > a[j])
 			{
 				itmp = a[j-1];
@@ -173,12 +173,16 @@ void ShakerSort (int *a, int n, ofstream &fout)
 {
 	unsigned long int mainC = 0, secondaryC = 0, memory = 0; 
 	int j, k = n-1, left = 1, right = n-1, x; memory += 5*sizeof(int);
+	/*
+	left, right - границы неотсортированного интервала
+	k - индекс последнего, установленного в нужную позицию элемента
+	*/
 	chrono::steady_clock::time_point start_time, end_time; // переменные для подсчёта времени работы алгоритма
     start_time = chrono::steady_clock::now();
 	do
 	{
 		for (j=right; ++secondaryC && j >= left; j--)	//сначала просматриваем справа налево
-			if (mainC++ && a[j-1] > a[j])
+			if (++mainC && a[j-1] > a[j])
 			{
 				x = a[j-1];
 				a[j-1] = a[j];
@@ -195,7 +199,7 @@ void ShakerSort (int *a, int n, ofstream &fout)
 				k = j;
 			}
 		right = k-1;
-	}while(++secondaryC && left < right);	//и так до тех пор, пока есть что просматривать
+	}while(++secondaryC && left <= right);	//и так до тех пор, пока есть что просматривать
 	end_time = chrono::steady_clock::now();
 fout << setw(16) << chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count() << "|" 
 		<< setw(16) << mainC << "|" << setw(16) << secondaryC << "|" << setw(8) << memory << "|" << setw(6) << n/1000;

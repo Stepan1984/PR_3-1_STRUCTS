@@ -26,6 +26,12 @@
     <ClInclude Include="generator.h" />
     <ClInclude Include="preproc.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Bubble.txt" />
+    <Text Include="Merge.txt" />
+    <Text Include="Quick.txt" />
+    <Text Include="Shaker.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

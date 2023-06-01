@@ -30,4 +30,18 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Bubble.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="Merge.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="Quick.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="Shaker.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+  </ItemGroup>
 </Project>
