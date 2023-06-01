@@ -306,14 +306,14 @@ void NaturalMergeSort(int *a, int n, ofstream &fout)
                 tmp[pos3++] = p[pos1++];
         }
         while (++secondaryC && pos3 < n );
-        if (sorted) break;
+        if (++secondaryC && sorted) break;
         p = tmp;
         tmp = a;
         a = p;
         flag = !flag;
     }
     while (++secondaryC && split<n);
-    if (flag)
+    if (++secondaryC && flag)
     {
         for (pos1 = 0; ++secondaryC && pos1 < n; pos1++)
             tmp[pos1] = a[pos1];

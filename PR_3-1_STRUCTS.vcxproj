@@ -30,6 +30,10 @@
     <Text Include="Bubble.txt" />
     <Text Include="Merge.txt" />
     <Text Include="Quick.txt" />
+    <Text Include="rep_10.txt" />
+    <Text Include="rep_100.txt" />
+    <Text Include="rep_1000.txt" />
+    <Text Include="rep_500.txt" />
     <Text Include="Shaker.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
