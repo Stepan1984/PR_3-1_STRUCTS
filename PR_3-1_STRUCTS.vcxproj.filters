@@ -21,12 +21,30 @@
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="work_with_arrays.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="work_with_files.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="global.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="preproc.h">
+    <ClInclude Include="generator.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="generator.h">
+    <ClInclude Include="include.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="work_with_arrays.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="work_with_files.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="global.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,6 +59,13 @@
       <Filter>Файлы ресурсов</Filter>
     </Text>
     <Text Include="Shaker.txt">
+      <Filter>Файлы ресурсов</Filter>
+    </Text>
+    <Text Include="rep_10.txt" />
+    <Text Include="rep_100.txt" />
+    <Text Include="rep_1000.txt" />
+    <Text Include="rep_500.txt" />
+    <Text Include="test_numbers.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
   </ItemGroup>

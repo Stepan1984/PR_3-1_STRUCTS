@@ -1,5 +1,4 @@
 #pragma once
-#include "preproc.h"
 #include "generator.h"
 
 // количество повторений каждого элемента
@@ -12,59 +11,17 @@ using namespace std;
 
 int generator() 
 {   
- 
+    vector<int> data_with_reps; // создаЄм массив, в котором будем хранить массив с новым набором данных
     int reps[4] = {R1, R2, R3, R4}; // количество повтор€ющихс€ элементов в массиве
 
-    thread thr1(FillFile, std::ref(data_filenames[2]), reps[1], N4);
-    thread thr2(FillFile, std::ref(data_filenames[3]), reps[2], N4);
-    thread thr3(FillFile, std::ref(data_filenames[4]), reps[3], N4);
+    ReadFile(data_filenames[0], N4);
 
-    FillFile(data_filenames[1], reps[0], N4);
-
-    thr1.join();
-    thr2.join();
-    thr3.join();
-
+    for(int i = 0; i < 4; i++)
+    {
+        data_with_reps.clear(); // очистка массива
+        CopyVectorData(data_with_reps, N4/reps[i], reps[i]); // N4 - количество элементов, reps[i] - количество повторений каждого элемента в массиве  
+        ShuffleArray(data_with_reps, N4); // перемешиваем элементы массива
+        CreateFileVector(data_filenames[i+1], data_with_reps, N4); // сохран€ем полученную последовательность в файл
+    }
     return 0;
 }
-
-int FillFile(std::string& filename, int reps, int amount)
-{
-    ifstream fin;
-    ofstream fout;
-    fin.exceptions(ifstream::badbit | ifstream::failbit);
-    fout.exceptions(ofstream::badbit | ofstream::failbit);
-    
-    try
-    {
-        fin.open("test_numbers.txt");
-        cout << "‘айл успешно открыт" << endl;
-        fout.open(filename);
-        cout << "‘айл успешно создан" << endl;
-    }
-    catch (const std::exception& e)
-    {
-        cerr << e.what() << endl;
-        fin.close();
-        fout.close();
-        return 1;
-    }
-    
-    int i = 0, j;
-    string stmp;
-    while (i < amount)
-    {
-        getline(fin, stmp); // считываем строку из файла
-        for (j = 0; j < reps; j++)
-        {
-            fout << stmp << endl;
-        }
-        i += reps * 10;
-    }
-    
-    fout.close();
-    fin.close();
-    return 0;
-}
-
-

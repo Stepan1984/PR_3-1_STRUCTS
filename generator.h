@@ -1,4 +1,7 @@
 #pragma once
-#include "preproc.h"
+#include "include.h"
+#include "work_with_arrays.h"
+#include "work_with_files.h"
+#include "global.h"
+
 int generator();
-int FillFile(std::string &, int, int);

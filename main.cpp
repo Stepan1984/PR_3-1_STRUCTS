@@ -1,13 +1,12 @@
 #pragma once
+#include "include.h"
 #include "generator.h"
-#include "preproc.h"
+#include "work_with_arrays.h"
+#include "work_with_files.h"
+#include "global.h"
+
 
 using namespace std;
-
-/* вспомогательные функции */
-int ReadFile(string & filename,vector<int> &array, int n); // чтение файла
-int CopyData(vector<int> &data, int * array, int N); // копирование необходимого количества элементов
-void ReverseArray(int * array, int N); // разворот массива
 
 /* алгоритмы сортировки */
 void BubbleSort (int *a, int n, ofstream &fout); // сортировка пузырьком
@@ -17,7 +16,6 @@ void NaturalMergeSort(int *a, int n, ofstream &fout); // сортировка е
 
 
 
-/* Вспомогательные функции */
 int main()
 {
     setlocale(LC_ALL, "Rus"); 
@@ -26,12 +24,11 @@ int main()
 	int amounts[4] = {N1, N2, N3, N4}, N; // массив с необходимыми количествами эл-ов в массивах // количество эл-ов в данном массиве
 	int array[N4]; // сортируемый массив
     void (*f[])(int *, int, ofstream &) = {BubbleSort, ShakerSort, NonRecursiveQuickSort , NaturalMergeSort }; // массив указателей на функции
-	vector<int> data; // массив с исходными элементами
 	string table_header = "    время нс.   |    основные    | второстепенные | память | тыс. |  изначально   \n"; // 16|16|16|8|6|15
 
 	generator(); // создаём файлы с повторяющимися элементами
 
-	ofstream* files = new ofstream[4];
+	ofstream* files = new ofstream[4]; // создаём массив потоков на запись в файлы
   	for (int i = 0; i < 4; i++)
     	files[i].exceptions(ofstream::badbit | ofstream::failbit);
 
@@ -56,7 +53,8 @@ int main()
 
 	for(l = 0; l < 5; l++) // перебираем обрабатываемые файлы
 	{
-		if (ReadFile(data_filenames[l], data, N4)) // считываем необходимое количество чисел из файла
+		::data.clear(); // очищаем массив от старого набора данных
+		if (ReadFile(data_filenames[l], N4)) // считываем необходимое количество чисел из файла
 		{
 			std::cout << "ENTER" << endl;
 			while (cin.get() != '\n');
@@ -68,7 +66,7 @@ int main()
 			N = amounts[s]; // запоминаем количество эл-ов в нынешнем массиве
 			for (a = 0; a < 4; a++) // перебор алгоритмов сортировки
 			{
-				CopyData(data, array, N); // копируем данные в массив
+				CopyCData(array, N, 1); // копируем данные в массив
 
 				// если массив не отсортирован
 				f[a](array, N, files[a]); // сортируем массив
@@ -94,60 +92,6 @@ int main()
 
     return 1;
 }
-
-int ReadFile(string & filename,vector<int> &array, int n) // функция чтения файла
-{
-    int i = 0, itmp;
-    ifstream fin; // создаём поток
-    fin.exceptions(ifstream::badbit | ifstream::failbit); // для обработки исключительных ситуаций при открытие
-    try
-    {
-        fin.open(filename); // открываем поток на чтение файла
-        cout << "Файл " << filename << " успешно открыт" << endl;
-		while(i < n) // пока не считали нужное количество чисел из файла
-		{
-			fin >> itmp; 
-			array.push_back(itmp); // пушим элементы в конец массива
-			i++;
-		}
-    }
-    catch(const exception& ex) // отлавливаем ошибки при открытии
-    {
-        cerr << ex.what() << endl;
-        cout << "Ошибка открытия файла " << filename << endl;
-        while(cin.get() != '\n');
-		return 1;
-    }
-
-    fin.close(); // закрываем поток
-	return 0;
-}
-
-int CopyData(vector<int> &data, int * array, int N)
-{
-	if(data.empty())
-		return 0;
-
-	int i = 0;
-	while(i < N)
-	{
-		array[i] = data[i];
-		i++;
-	}
-	return 1;
-}
-
-void ReverseArray(int * array, int N) // функция разворота массива
-{
-	int itmp, half = N / 2;
-	for(int i = 0, j = N - 1; i < half; i++, j--)
-	{
-		itmp = array[i];
-		array[i] = array[j];
-		array[j] = itmp;
-	}
-}
-
 
 /* Алгоритмы сортировки */
 void BubbleSort (int *a, int n, ofstream &fout) // сортировка пузырьком
@@ -312,7 +256,7 @@ void NaturalMergeSort(int *a, int n, ofstream &fout)
         a = p;
         flag = !flag;
     }
-    while (++secondaryC && split<n);
+    while (++secondaryC && split < n);
     if (++secondaryC && flag)
     {
         for (pos1 = 0; ++secondaryC && pos1 < n; pos1++)
