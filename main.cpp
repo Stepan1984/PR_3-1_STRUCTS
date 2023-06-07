@@ -213,62 +213,90 @@ void NaturalMergeSort(int *a, int n, ofstream &fout)
 {
 	unsigned long int mainC = 0, secondaryC = 0, memory = 0;
 
-    int split;                   // индекс, по которому делим массив
+    int split; // индекс, по которому делим массив
     int end, *p=a, *tmp; memory += 2 * sizeof(int*);
     char flag = 0, sorted = 0; memory += 2 * sizeof(char);
     int pos1, pos2, pos3; memory += 5 * sizeof(int);
     tmp = (int*) malloc (n*sizeof(int)); memory += n * sizeof(int);
 
+	/*
+	pos1 - начало первой части (сортируемой в current итерации)
+	pos2 - сдвиг относительно начала массива для определения левой границы части, неотсортированной в предыдущей итерации цикла
+	pos3 - индекс последнего добавленного в новый массив элемента
+	*/
+
+
 	chrono::steady_clock::time_point start_time, end_time; // переменные для подсчёта времени работы алгоритма
     start_time = chrono::steady_clock::now();
 
-    do                 // если есть более 1 элемента
+	// цикл пока массив разделён на части
+    do 
     {
-        end = n; pos2 = pos3 = 0;
+		// возвращаем переменные к исходным значениям
+        end = n; // конец массива
+		pos2 = pos3 = 0; 
+
+		// цикл заполнения нового массива
         do
         {
-            p += pos2; end = n - pos3;
-            for (split=1; ++secondaryC && split < end && ++mainC && p[split-1] <= p[split]; split++); //первая серия
-            if (++secondaryC && split == n) 
-				{sorted = 1 ; break;}
-            pos1 = 0; pos2 = split;
-            while (++secondaryC && pos1 < split && ++secondaryC && pos2 < end ) 	// идет слияние, пока есть хоть один элемент в каждой серии
+            p += pos2; // p (указатель на начало сортируемой части) сдвигаем вправо на pos2 элементов 
+			end = n - pos3; // индекс конца массива уменьшаем на pos3 элементов, получая конец сортируемой части
+
+			// цикл поиска упорядоченных последовательностей внутри неотсортированной части
+            for (split = 1; ++secondaryC && split < end && ++mainC && p[split-1] <= p[split]; split++); //первая часть // пока предыдущий элемент <= нынешнему, увеличиваем размер первой части сдвигая split вправо 
+
+            if (++secondaryC && split == n) // если размер части равен длине массива
+				{sorted = 1 ; break;} // выходим из всех циклов, массив отсортирован
+
+			// если длина первой части < размера массива (т.е. массив не отсортирован)
+            pos1 = 0; pos2 = split; // устанавливаем индексы начала первой и второй части 
+			// 1-часть:[pos1;split]  
+			// 2-часть:[pos2;end] или [split;end]
+
+
+
+			// цикл слияния и записи в новый массив
+            while (++secondaryC && pos1 < split && ++secondaryC && pos2 < end ) // идет слияние, пока есть хоть один элемент в каждой серии
             {
 				
-                if (++mainC && p[pos1] < p[pos2])
-                    tmp[pos3++] = p[pos1++];
-                else
+                if (++mainC && p[pos1] < p[pos2]) // если элемент из первой серии меньше элемента из второй
+                    tmp[pos3++] = p[pos1++]; // в новый массив записываем элемент из первой серии и в проходе по первой серии переходим к следующему элементу
+                else // если элемент из второй серии меньше элемента из первой
                 {
-                    tmp[pos3++] = p[pos2++];
-                    if (++mainC && p[pos2] < p[pos2-1]) break;
-                }
+                    tmp[pos3++] = p[pos2++]; // в новый массив записываем элемент из второй серии и во 2-серии переходим к следующему элементу
+                    if (++mainC && p[pos2] < p[pos2-1]) break; // если элемент из 2-серии меньше чем стоящий перед ним элемент, то выходим из цикла слияния, так как если мы добавим число в новый массив, то оно будет меньше предыдущего в нём, то есть пропадает смысл сортировки по возрастанию
+                } 
             }
-            // одна последовательность закончилась - копировать остаток другой в конец буфера
-            while (++secondaryC && pos2 < end && ++mainC && tmp[pos3-1]<=p[pos2] )  			 // пока вторая последовательность не пуста
-                tmp[pos3++] = p[pos2++];
-            while ( ++secondaryC && pos1 < split )  		// пока первая последовательность не пуста
-                tmp[pos3++] = p[pos1++];
+
+
+            // все элементы одной из частей закончились => копируем оставшиеся элементы из второй части в конец нового массива
+            while (++secondaryC && pos2 < end && ++mainC && tmp[pos3-1]<=p[pos2] ) // пока вторая последовательность не пуста // pos3(индекс в tmp массиве) // пока элемент во новом массиве меньше или равен элементу из старого
+                tmp[pos3++] = p[pos2++]; // копируем значение в новый массив из старого и переходим к следующим элементам
+            while ( ++secondaryC && pos1 < split ) // пока первая последовательность не пуста
+                tmp[pos3++] = p[pos1++]; // копируем в новый из старого без сравнения
         }
-        while (++secondaryC && pos3 < n );
-        if (++secondaryC && sorted) break;
-        p = tmp;
-        tmp = a;
-        a = p;
-        flag = !flag;
+        while (++secondaryC && pos3 < n ); // пока не заполнили новый массив
+
+
+        if (++secondaryC && sorted) break; // если массив отсортирован
+        p = tmp; // массивом для сортировки делаем тот, в который только что копировали данные
+        tmp = a; //...
+        a = p; //...
+        flag = !flag; // флаг меняет значение (для того чтобы знать в каком из массивов хранится сортируемый/отсортированный массив)
     }
-    while (++secondaryC && split < n);
-    if (++secondaryC && flag)
+    while (++secondaryC && split < n); // пока индекс разделителя меньше длины массива
+
+
+    if (++secondaryC && flag) // проверка местоположения отсортированного массива
     {
         for (pos1 = 0; ++secondaryC && pos1 < n; pos1++)
             tmp[pos1] = a[pos1];
         free (a);
     }
     else
-        free (tmp);
+        free (tmp); 
 	
 	end_time = chrono::steady_clock::now();
 	fout << setw(16) << chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count() << "|" 
-		<< setw(16) << mainC << "|" << setw(16) << secondaryC << "|" << setw(8) << memory << "|" << setw(6) << n/1000; 
-
-	/*cout << setw(16) << chrono::duration_cast<chrono::nanoseconds>(end_time - start_time).count() << endl;*/
+		<< setw(16) << mainC << "|" << setw(16) << secondaryC << "|" << setw(8) << memory << "|" << setw(6) << n/1000;
 }
