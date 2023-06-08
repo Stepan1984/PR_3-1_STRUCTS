@@ -68,15 +68,15 @@ int main()
 			{
 				CopyCData(array, N, 1); // копируем данные в массив
 
-				// если массив не отсортирован
+				// массив не отсортирован
 				f[a](array, N, files[a]); // сортируем массив
 				files[a] << "|" << setw(15) << left << "не отсортирован" << endl;
 
-				// если массив отсортирован
+				// массив отсортирован
 				f[a](array, N, files[a]); // сортируем массив
 				files[a] << "|" << setw(15) << left << "отсортирован" << endl;
 
-				// если массив отсортирован, но нужно его развернуть
+				// массив отсортирован, но нужно его развернуть
 				ReverseArray(array, N); // разворачиваем массив
 				f[a](array, N, files[a]); // сортируем массив
 				files[a] << "|" << setw(15) << left << "развёрнут" << endl;
@@ -96,7 +96,7 @@ int main()
 /* Алгоритмы сортировки */
 void BubbleSort (int *a, int n, ofstream &fout) // сортировка пузырьком
 {
-	long unsigned int mainC = 0, secondaryC = 0, memory = 0; // mainCompares // secondaryCompares
+	long long unsigned int mainC = 0, secondaryC = 0, memory = 0; // mainCompares // secondaryCompares
 	int i, j, itmp; memory += 3 * sizeof(int); 
 	chrono::steady_clock::time_point start_time, end_time; // переменные для подсчёта времени работы алгоритма
     start_time = chrono::steady_clock::now();
@@ -115,7 +115,7 @@ void BubbleSort (int *a, int n, ofstream &fout) // сортировка пузы
 
 void ShakerSort (int *a, int n, ofstream &fout)
 {
-	unsigned long int mainC = 0, secondaryC = 0, memory = 0; 
+	unsigned long long int mainC = 0, secondaryC = 0, memory = 0; 
 	int j, k = n-1, left = 1, right = n-1, x; memory += 5*sizeof(int);
 	/*
 	left, right - границы неотсортированного интервала
@@ -151,7 +151,7 @@ fout << setw(16) << chrono::duration_cast<chrono::nanoseconds>(end_time - start_
 
 void NonRecursiveQuickSort (int *a, int n, ofstream &fout)
 {
-	unsigned long int mainC = 0, secondaryC = 0, memory = 0;
+	unsigned long long int mainC = 0, secondaryC = 0, memory = 0;
 
 	const int M=log(n)/log(2)+1;
 	int i, j, left, right, s, x, w; memory += 8 * sizeof(int);
@@ -211,7 +211,7 @@ void NonRecursiveQuickSort (int *a, int n, ofstream &fout)
 
 void NaturalMergeSort(int *a, int n, ofstream &fout)
 {
-	unsigned long int mainC = 0, secondaryC = 0, memory = 0;
+	unsigned long long int mainC = 0, secondaryC = 0, memory = 0;
 
     int split; // индекс, по которому делим массив
     int end, *p=a, *tmp; memory += 2 * sizeof(int*);
@@ -246,7 +246,7 @@ void NaturalMergeSort(int *a, int n, ofstream &fout)
             for (split = 1; ++secondaryC && split < end && ++mainC && p[split-1] <= p[split]; split++); //первая часть // пока предыдущий элемент <= нынешнему, увеличиваем размер первой части сдвигая split вправо 
 
             if (++secondaryC && split == n) // если размер части равен длине массива
-				{sorted = 1 ; break;} // выходим из всех циклов, массив отсортирован
+				{sorted = 1 ; break;} // выходим из всех циклов, массив отсортирован 
 
 			// если длина первой части < размера массива (т.е. массив не отсортирован)
             pos1 = 0; pos2 = split; // устанавливаем индексы начала первой и второй части 
